@@ -15,6 +15,7 @@
             <div class="header panel">Etch-a-Sketch!</div>
             <div class="content">
                 <div class="settings panel">
+                    <div class="text-label">Color</div>
                     <div class="color-buttons">
                         <button class="color-button" id="black-button"></button>
                         <button class="color-button" id="red-button"></button>
@@ -24,9 +25,12 @@
                         <button class="color-button" id="blue-button"></button>
                         <button class="color-button" id="purple-button"></button>
                     </div>
-                    <button id="rainbow">Rainbow</button>
-                    <button id="eraser">Eraser</button>
-                    <button id="clear-canvas">Clear Canvas</button>
+                    <button class="panel-button" id="rainbow">Rainbow</button>
+                    <button class="panel-button" id="eraser">Eraser</button>
+                    <button class="panel-button" id="clear-canvas">Clear Canvas</button>
+                    <div class="text-label">Canvas Size</div>
+                    <input type="range" min="1" max="100" value="32" class="slider" id="canvas-slider">
+                    <div class="text-label" id="canvas-size"></div>
                 </div>
                 <div class="canvas-container panel">
                     

@@ -1,19 +1,68 @@
+let colors = ["black", "red", "orange", "yellow", "green", "blue", "purple"];
+
 let brushColor = "#000000";
 const backgroundColor = "#ffffff";
 let canvasSize = 32;
 let isRainbow = false;
+let isEraser = false;
 const canvasContainerElement =  document.querySelector(".canvas-container");
 
 // Add event listeners to buttons
 const rainbowButton = document.querySelector("#rainbow");
 rainbowButton.addEventListener("click", () => toggleRainbow());
 const eraserButton = document.querySelector("#eraser");
-eraserButton.addEventListener("click", () => changeBrushColor(backgroundColor));
+eraserButton.addEventListener("click", () => toggleEraser());
 const clearCanvasButton = document.querySelector("#clear-canvas");
 clearCanvasButton.addEventListener("click", () => clearCanvas());
 
-function createCanvas() {
+const panelButtons = document.querySelectorAll(".panel-button");
+panelButtons.forEach(function(button) {
+    button.addEventListener("mouseenter", () => button.classList.add("button-hover"));
+    button.addEventListener("mouseleave", () => button.classList.remove("button-hover"));
+});
+
+// Color buttons
+colors.forEach(function(color) {
+    createColorButton(color);
+});
+
+// Canvas Size Slider
+const canvasSlider = document.querySelector("#canvas-slider");
+const canvasSizeDisplay = document.querySelector("#canvas-size");
+canvasSizeDisplay.innerHTML = canvasSize;
+canvasSlider.addEventListener("input", () => { canvasSizeDisplay.innerHTML = canvasSlider.value; });
+canvasSlider.addEventListener("change", () => { changeCanvasSize(canvasSlider.value); });
+
+function createColorButton(color) {
+    const colorButton = document.querySelector("#" + color + "-button");
+    colorButton.style.backgroundColor = color;
+    colorButton.addEventListener("click", () => selectColorButton(color));
+    colorButton.addEventListener("mouseenter", () => colorButton.classList.add("color-button-active"));
+    colorButton.addEventListener("mouseleave", () => colorButton.classList.remove("color-button-active"));
+}
+
+function selectColorButton(color) {
+    const colorButtons = document.querySelectorAll(".color-button");
+    colorButtons.forEach(function(colorButton) {
+        if(colorButton.id === (color + "-button")) {
+            colorButton.classList.add("color-button-selected");
+        } else {
+            colorButton.classList.remove("color-button-selected");
+        }
+    });
+    changeBrushColor(color);
+    removeEraser();
+    removeRainbow();
+}
+
+function changeCanvasSize(size) {
     deleteCanvas();
+    canvasSize = size;
+    console.log(canvasSize);
+    createCanvas();
+}
+
+function createCanvas() {
     const canvasElement = document.createElement("div");
     canvasElement.id = "canvas";
     canvasContainerElement.appendChild(canvasElement);
@@ -32,7 +81,9 @@ function createCanvas() {
 }
 
 function deleteCanvas() {
-    //remove divs from canvas
+    let canvasElement = document.querySelector("#canvas");
+    console.log(canvasElement);
+    canvasElement.remove();
 }
 
 function clearCanvas() {
@@ -51,7 +102,10 @@ function changeBrushColor(color) {
 }
 
 function getBrushColor() {
-    if (isRainbow) {
+    if (isEraser) {
+        return backgroundColor;
+    }
+    else if (isRainbow) {
         return getRandomColor();
     }
     else {
@@ -81,7 +135,34 @@ function getRandomInt(max) {
 }
 
 function toggleRainbow() {
-    isRainbow = !isRainbow;
+    selectColorButton();
+    if (!isRainbow) {
+        rainbowButton.classList.add("button-selected");
+        isRainbow = true;
+    } else {
+        removeRainbow();
+    }   
+}
+
+function toggleEraser() {
+    selectColorButton();
+    if (!isEraser) {
+        eraserButton.classList.add("button-selected");
+        isEraser = true;
+    } else {
+        removeEraser();
+    }
+}
+
+function removeRainbow() {
+    rainbowButton.classList.remove("button-selected");
+    isRainbow = false;
+}
+
+function removeEraser() {
+    eraserButton.classList.remove("button-selected");
+    isEraser = false;
 }
 
 createCanvas();
+selectColorButton("black");
